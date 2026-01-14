@@ -1,10 +1,14 @@
 // Endpoint for querying the fibonacci numbers
 // src/fibRoute.ts
 import express, { Request, Response } from "express";
-import { fib } from "./fib";
+import fib from "./fib"
 
 const router = express.Router();
 
+/**
+ * GET /fib/:n
+ * Returns the nth Fibonacci number
+ */
 router.get("/:n", (req: Request, res: Response) => {
   const n = parseInt(req.params.n, 10);
 
@@ -15,8 +19,8 @@ router.get("/:n", (req: Request, res: Response) => {
   try {
     const result = fib(n);
     res.json({ n, fib: result });
-  } catch (err: unknown) {
-    res.status(500).json({ error: (err as Error).message });
+  } catch (error: unknown) {
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
