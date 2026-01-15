@@ -1,29 +1,34 @@
-// Endpoint for querying the fibonacci numbers
-
+// src/fibRoute.ts
 import { Request, Response } from "express";
 import fibonacci from "./fib";
 
+/**
+ * Express route handler for GET /fib/:num
+ */
 export default (req: Request<{ num?: string }>, res: Response): void => {
-  let numStr="";
+  const numStr = req.params.num || "";
 
-  if (typeof req.params.num === "string") {
-    numStr = req.params.num;
-  }
-
+  // Convert string to integer
   const n = Number.parseInt(numStr, 10);
 
-  // allow negative integers so fibonacci can decide "undefined" for negatives
+  // Validate input
   if (Number.isNaN(n) || !Number.isInteger(n)) {
-    res.status(400).send("Invalid input");
+    res.status(400).send("Invalid input. Please provide an integer.");
     return;
   }
 
-  const fib = fibonacci as (x: number) => number | undefined;
-  const fibN = fib(n);
-  let result = `fibonacci(${n}) is ${String(fibN)}`;
+  let result: string;
 
-  if (typeof fibN !== "number" || fibN < 0) {
+  try {
+    const fibN = fibonacci(n);
+    // If negative number returns error, treat as undefined
+    result =
+      typeof fibN === "number" && fibN >= 0
+        ? `fibonacci(${n}) is ${fibN}`
+        : `fibonacci(${n}) is undefined`;
+  } catch (err) {
     result = `fibonacci(${n}) is undefined`;
   }
+
   res.send(result);
 };
