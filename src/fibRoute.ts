@@ -1,15 +1,17 @@
-﻿// src/fibRoute.ts
+// src/fibRoute.ts
 import { Request, Response } from "express";
+import fib from "./fib";
 
 export default function fibRoute(req: Request, res: Response) {
-  const num = parseInt(req.params.num, 10);
-  if (isNaN(num) || num < 0) {
-    return res.send(`fibonacci(${num}) is undefined`);
+  // tests call app.get('/fib/:num', fibRoute) so the param name is 'num'
+  const raw = req.params.num;
+  const n = parseInt(String(raw), 10);
+
+  if (isNaN(n) || n < 0) {
+    // Tests expect plain text like: "fibonacci(-2) is undefined"
+    return res.send(`fibonacci(${raw}) is undefined`);
   }
-  let a = 0, b = 1;
-  for (let i = 2; i <= num; i++) {
-    [a, b] = [b, a + b];
-  }
-  const result = num === 0 ? 0 : b;
-  res.send(`fibonacci(${num}) is ${result}`);
+
+  const result = fib(n);
+  return res.send(`fibonacci(${n}) is ${result}`);
 }
