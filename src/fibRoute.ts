@@ -12,6 +12,11 @@ export default function fibRoute(req: Request, res: Response) {
     return res.send(`fibonacci(${raw}) is undefined`);
   }
 
-  const result = fib(n);
-  return res.send(`fibonacci(${n}) is ${result}`);
+  try {
+    const result = fib(n);
+    return res.send(`fibonacci(${n}) is ${result}`);
+  } catch (error) {
+    // Handle any unexpected errors from fib()
+    return res.send(`fibonacci(${n}) is undefined`);
+  }
 }
