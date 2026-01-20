@@ -1,23 +1,21 @@
+﻿// Endpoint for querying the fibonacci numbers
 // src/fibRoute.ts
-import { Request, Response } from "express";
-import { fibonacci } from "./fib";
+import express, { Request, Response } from "express";
+import fib from "./fib"
 
-const fibRoute = (req: Request<{ num?: string }>, res: Response): void => {
-  let numStr = "";
+const router = express.Router();
 
-  if (typeof req.params.num === "string") {
-    numStr = req.params.num;
+router.get("/:n", (req: Request, res: Response) => {
+  const n = parseInt(req.params.n, 10);
+  if (isNaN(n) || n < 0) {
+    return res.status(400).json({ error: "n must be a non-negative integer" });
   }
-
-  const n = Number.parseInt(numStr, 10);
-
-  if (Number.isNaN(n) || !Number.isInteger(n)) {
-    res.status(400).send("Invalid input");
-    return;
+  try {
+    const result = fib(n);
+    res.json({ n, fib: result }); // must be { n, fib }
+  } catch (err: unknown) {
+    res.status(500).json({ error: (err as Error).message });
   }
+});
 
-  const fibN = fibonacci(n);
-  res.send(`fibonacci(${n}) is ${String(fibN)}`);
-};
-
-export default fibRoute;
+export default router;
