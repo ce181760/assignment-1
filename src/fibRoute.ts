@@ -1,6 +1,6 @@
 // src/fibRoute.ts
 import { Request, Response } from "express";
-import fib from "./fib";
+import { fib } from "./fib";
 
 export default function fibRoute(req: Request, res: Response) {
   // tests call app.get('/fib/:num', fibRoute) so the param name is 'num'
